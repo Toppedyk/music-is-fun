@@ -7,15 +7,15 @@ export default class Song {
     this.album = data.collectionName || data.album;
     this.price = data.trackPrice || data.price || 1;
     this.preview = data.previewUrl || data.preview;
-    this._id = data.trackId || data._id;
-    this.id = this._id
+    this.id = data.trackId || data.id;
+   // this.id = this.id
   }
 
   get Template() {
     return `
-    <div class="card" style="width: 18rem;" onclick="app.songsController.setActive(${this._id})">
+    <div class="card my-2 shadow" onclick="app.songsController.setActive(${this.id})">
     <img src="${this.albumArt}" class="card-img-top" alt="...">
-    <div class="card-body">
+    <div class="card-body p-1">
       <h5 class="card-title">${this.artist} | ${this.title}</h5>
     </div>
     </div>
@@ -24,28 +24,31 @@ export default class Song {
 
   get playlistTemplate() {
     return `
-    <div class="card" style="width: 18rem;">
+    <div class="card my-2 shadow" >
     <img src="${this.albumArt}" class="card-img-top" alt="...">
-    <div class="card-body">
+    <div class="card-body p-1">
       <h5 class="card-title">${this.artist} | ${this.title}</h5>
-      <button type="button" class="btn btn-outline-danger" onclick="app.songsController.removeSong('${this._id}')">Remove</button>
+      <div class = "d-flex">
+      <audio controls><source src="${this.preview}" type="audio/ogg"</audio>
+      </div>
     </div>
+    <button type="button" class="btn btn-sm btn-outline-danger mt-2" onclick="app.songsController.removeSong('${this.id}')">Remove</button>
     </div>
         `;
   }
 
   get Active() {
     return `
-    <div class="card">
+    <div class="card shadow">
     <img src="${this.albumArt}" class="card-img-top" alt="...">
-    <div class="card-body">
+    <div class="card-body p-1">
       <h5 class="card-title">${this.artist} | ${this.title}</h5>
       <p>Album: ${this.album} | Buy Now $${this.price}</p>
     </div>
     <div>
       <audio controls><source src="${this.preview}" type="audio/ogg"</audio>
       </div>
-      <button type="button" class="btn btn-outline-success" onclick="app.songsController.addSong(${this._id})">Add To Playlist</button>
+      <button type="button" class="btn btn-outline-success" onclick="app.songsController.addSong(${this.id})">Add To Playlist</button>
     </div>
         `;
   }
