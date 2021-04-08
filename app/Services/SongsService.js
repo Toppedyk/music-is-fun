@@ -14,6 +14,7 @@ class SongsService {
     $.getJSON(url)
       .then(res => {
         ProxyState.songs = res.results.map(rawData => new Song(rawData));
+        console.log(ProxyState.songs);
       })
       .catch(err => {
         throw new Error(err);
@@ -25,6 +26,8 @@ class SongsService {
    */
   async getMySongs() {
     //TODO What are you going to do with this result
+    let res = await sandBoxApi.get()
+    ProxyState.playlist = res.data.map(s => new Song(s))
   }
 
   /**
@@ -32,9 +35,16 @@ class SongsService {
    * Afterwords it will update the store to reflect saved info
    * @param {string} id
    */
-  addSong(id) {
+  async addSong(id) {
     //TODO you only have an id, you will need to find it in the store before you can post it
     //TODO After posting it what should you do?
+    let song = ProxyState.songs.find(s => s.id ===id)
+    console.log(song);
+
+    song._id = null
+    let res = await sandBoxApi.post('', song)
+    ProxyState.playlist = [...ProxyState.playlist, new Song(res.data)]
+    console.log(ProxyState.playlist)
   }
 
   /**
@@ -42,8 +52,15 @@ class SongsService {
    * Afterwords it will update the store to reflect saved info
    * @param {string} id
    */
-  removeSong(id) {
+  async removeSong(id) {
     //TODO Send the id to be deleted from the server then update the store
+    let song = ProxyState.playlist.find(s => s.id === id)
+    await sandBoxApi.delete(song.id)
+    ProxyState.playlist = ProxyState.playlist.filter(s => s.id !== id)
+  }
+  setActive(id) {
+    let song = ProxyState.songs.find(s => s.id === id)
+    ProxyState.activeSong = song
   }
 }
 
